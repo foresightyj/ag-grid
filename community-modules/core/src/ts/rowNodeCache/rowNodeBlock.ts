@@ -44,6 +44,10 @@ export abstract class RowNodeBlock extends BeanStub {
 
     protected abstract processServerFail(): void;
 
+    public abstract getTopPixel(): number;
+
+    public abstract getHeight(): number;
+
     protected constructor(id: number) {
         super();
         this.id = id;

@@ -1,11 +1,14 @@
 import { RowNodeBlock } from "./rowNodeBlock";
-import { Bean, PostConstruct, Qualifier } from "../context/context";
+import { Autowired, Bean, PostConstruct, Qualifier } from "../context/context";
 import { BeanStub } from "../context/beanStub";
+import { RowRenderer } from "../rendering/rowRenderer";
 import { Logger, LoggerFactory } from "../logger";
 import { _ } from "../utils";
 
 @Bean('rowNodeBlockLoader')
 export class RowNodeBlockLoader extends BeanStub {
+
+    @Autowired('rowRenderer') private rowRenderer: RowRenderer;
 
     public static BLOCK_LOADER_FINISHED_EVENT = 'blockLoaderFinished';
 
@@ -77,15 +80,33 @@ export class RowNodeBlockLoader extends BeanStub {
             return;
         }
 
-        let blockToLoad: RowNodeBlock | null = null;
-        this.blocks.forEach(block => {
-            if (block.getState() === RowNodeBlock.STATE_WAITING_TO_LOAD) {
-                blockToLoad = block;
-            }
-        });
+        const topPixel = this.rowRenderer.getFirstVisibleVerticalPixel();
+        const bottomPixel = this.rowRenderer.getLastVisibleVerticalPixel();
+        const getDistanceToViewport = (block: RowNodeBlock) => {
+            const blockTop = block.getTopPixel();
+            const blockBottom = blockTop + block.getHeight();
 
-        if (blockToLoad) {
-            (blockToLoad as RowNodeBlock).load();
+            const blockTopIsInsideViewport = topPixel < blockTop && blockTop < bottomPixel;
+            const blockBottomIsInsideViewport = topPixel < blockBottom && blockBottom < bottomPixel;
+
+            if (blockTopIsInsideViewport || blockBottomIsInsideViewport) {
+                return 0;
+            }
+
+            // the top of the viewport distance from the bottom of the block
+            const distTop = Math.abs(topPixel - blockBottom);
+            // the bottom of the viewport distance to the top of the block
+            const distBottom = Math.abs(bottomPixel - blockTop);
+            return distTop < distBottom ? distTop : distBottom;
+        }
+        const blocksToLoad: RowNodeBlock[] = this.blocks.filter(block => (
+            block.getState() === RowNodeBlock.STATE_WAITING_TO_LOAD
+        )).sort((a, b) => getDistanceToViewport(a) - getDistanceToViewport(b));
+
+        const loadAvailability = this.maxConcurrentRequests !== undefined ? this.maxConcurrentRequests - this.activeBlockLoadsCount : blocksToLoad.length;
+        for(let i = 0; i < loadAvailability && i < blocksToLoad.length; i++) {
+            const block = blocksToLoad[i];
+            block.load();
             this.activeBlockLoadsCount++;
             this.printCacheStatus();
         }

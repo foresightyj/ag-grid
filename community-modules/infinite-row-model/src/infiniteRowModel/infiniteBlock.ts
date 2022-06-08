@@ -13,7 +13,6 @@ import {
 import { InfiniteCache, InfiniteCacheParams } from "./infiniteCache";
 
 export class InfiniteBlock extends RowNodeBlock {
-
     @Autowired('beans') private beans: Beans;
 
     private readonly startRow: number;
@@ -137,6 +136,16 @@ export class InfiniteBlock extends RowNodeBlock {
 
     public getEndRow(): number {
         return this.endRow;
+    }
+
+    public  getTopPixel(): number {
+        // used by the row node block loader to prioritise blocks.
+        return 0;
+    }
+
+    public getHeight(): number {
+        // used by the row node block loader to prioritise blocks.
+        return 0;
     }
 
     // creates empty row nodes, data is missing as not loaded yet

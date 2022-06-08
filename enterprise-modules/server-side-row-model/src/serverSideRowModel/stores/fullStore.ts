@@ -160,6 +160,14 @@ export class FullStore extends RowNodeBlock implements IServerSideStore {
         return this.nodesAfterSort.length;
     }
 
+    public getTopPixel(): number {
+        return this.topPx;
+    }
+
+    public getHeight(): number {
+        return this.heightPx;
+    }
+
     private createDataNode(data: any, index?: number): RowNode {
         const rowNode = this.blockUtils.createRowNode(
             {

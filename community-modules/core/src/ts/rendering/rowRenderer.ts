@@ -79,6 +79,7 @@ export class RowRenderer extends BeanStub {
     private pinningRight: boolean;
 
     private firstVisibleVPixel: number;
+    private lastVisibleVPixel: number;
 
     // we only allow one refresh at a time, otherwise the internal memory structure here
     // will get messed up. this can happen if the user has a cellRenderer, and inside the
@@ -1082,6 +1083,7 @@ export class RowRenderer extends BeanStub {
                 }
 
                 this.firstVisibleVPixel = Math.max(bodyTopPixel + paginationOffset, pageFirstPixel) + divStretchOffset;
+                this.lastVisibleVPixel = Math.max(bodyBottomPixel + paginationOffset, pageLastPixel) + divStretchOffset;
 
                 // if the rows we are about to display get their heights changed, then that upsets the calcs from above.
                 rowHeightsChanged = this.ensureAllRowsInRangeHaveHeightsCalculated(firstPixel, lastPixel);
@@ -1170,6 +1172,10 @@ export class RowRenderer extends BeanStub {
 
     public getFirstVisibleVerticalPixel(): number {
         return this.firstVisibleVPixel;
+    }
+
+    public getLastVisibleVerticalPixel(): number {
+        return this.lastVisibleVPixel;
     }
 
     public getFirstVirtualRenderedRow() {
