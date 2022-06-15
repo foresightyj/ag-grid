@@ -24,6 +24,8 @@ export interface BaseExportParams {
     processGroupHeaderCallback?(params: ProcessGroupHeaderForExportParams): string;
     processRowGroupCallback?(params: ProcessRowGroupForExportParams): string;
 
+    hideOpenParents?: boolean;
+
     /** @deprecated */
     columnGroups?: boolean;
     /** @deprecated */

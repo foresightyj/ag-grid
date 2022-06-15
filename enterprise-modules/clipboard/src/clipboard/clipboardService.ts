@@ -691,7 +691,8 @@ export class ClipboardService extends BeanStub implements IClipboardService {
             processCellCallback: this.gridOptionsWrapper.getProcessCellForClipboardFunc(),
             processRowGroupCallback: (params) => params.node.key!,
             processHeaderCallback: this.gridOptionsWrapper.getProcessHeaderForClipboardFunc(),
-            processGroupHeaderCallback: this.gridOptionsWrapper.getProcessGroupHeaderForClipboardFunc()
+            processGroupHeaderCallback: this.gridOptionsWrapper.getProcessGroupHeaderForClipboardFunc(),
+            hideOpenParents: false,
         };
 
         return this.csvCreator.getDataAsCsv(exportParams);

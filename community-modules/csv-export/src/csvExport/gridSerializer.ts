@@ -62,7 +62,7 @@ export class GridSerializer extends BeanStub {
         const api = gridOptionsWrapper.getApi()!;
         const columnApi = gridOptionsWrapper.getColumnApi()!;
         const skipSingleChildrenGroup = gridOptionsWrapper.isGroupRemoveSingleChildren();
-        const hideOpenParents = gridOptionsWrapper.isGroupHideOpenParents();
+        const hideOpenParents = params.hideOpenParents !== undefined ? params.hideOpenParents : gridOptionsWrapper.isGroupHideOpenParents();
         const skipLowestSingleChildrenGroup = gridOptionsWrapper.isGroupRemoveLowestSingleChildren();
         const isLeafNode = this.columnModel.isPivotMode() ? node.leafGroup : !node.group;
         const skipRowGroups = params.skipGroups || params.skipRowGroups;
