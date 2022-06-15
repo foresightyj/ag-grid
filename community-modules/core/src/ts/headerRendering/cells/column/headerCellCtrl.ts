@@ -274,7 +274,13 @@ export class HeaderCellCtrl extends AbstractHeaderCellCtrl {
             getDragItem: () => this.createDragItem(),
             dragItemName: this.displayName,
             onDragStarted: () => this.column.setMoving(true, "uiColumnMoved"),
-            onDragStopped: () => this.column.setMoving(false, "uiColumnMoved")
+            onDragStopped: (dragItem, finalZone) => {
+                this.column.setMoving(false, "uiColumnMoved");
+                if (!finalZone) {
+                    // if there's no final drop target we hide the columns 
+                    this.columnModel.setColumnsVisible(dragItem?.columns || [], false, "uiColumnMoved");
+                }
+            },
         };
 
         this.dragAndDropService.addDragSource(this.moveDragSource, true);

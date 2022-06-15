@@ -76,7 +76,7 @@ export interface DragSource {
     /**
      * Callback for drag stopped
      */
-    onDragStopped?: () => void;
+    onDragStopped?: (dragItem: DragItem | null, dropZone?: DropTarget | null) => void;
 }
 
 export interface DropTarget {
@@ -240,7 +240,7 @@ export class DragAndDropService extends BeanStub {
         this.dragging = false;
 
         if (this.dragSource.onDragStopped) {
-            this.dragSource.onDragStopped();
+            this.dragSource.onDragStopped(this.dragItem, this.lastDropTarget);
         }
 
         if (this.lastDropTarget && this.lastDropTarget.onDragStop) {
